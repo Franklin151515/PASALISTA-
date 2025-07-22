@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Inicio</title>
+</head>
+<body>
+    <h2>Bienvenido, {{ usuario.username }}</h2>
+
+    {% if usuario.es_docente %}
+        <p><strong>Eres docente.</strong> Estos son tus cursos:</p>
+        <ul>
+            {% for curso in cursos %}
+                <li>
+                    {{ curso.nombre }} - {{ curso.descripcion }}
+                    <form action="{% url 'crear_sesion' curso.id %}" method="post" style="display:inline;">
+                        {% csrf_token %}
+                        <button type="submit">Crear sesión</button>
+                    </form>
+                    {% for sesion in curso.sesion_set.all %}
+                        <p>Sesión: {{ sesion.fecha_creacion }} |
+                        <a href="{% url 'ver_asistentes' sesion.id %}">Ver asistentes</a></p>
+                    {% endfor %}
+                </li>
+            {% empty %}
+                <li>No tienes cursos asignados aún.</li>
+            {% endfor %}
+        </ul>
+
+        <a href="{% url 'crear_curso' %}">+ Crear nuevo curso</a>
+        <a href="{% url 'historial_docente' %}">📋 Ver historial de asistencia</a>
+
+
+    {% else %}
+        <p><strong>Eres estudiante.</strong></p>
+        <a href="{% url 'cursos_disponibles' %}">Ver cursos disponibles</a><br>
+        <a href="{% url 'mis_cursos' %}">Mis cursos</a><br>
+        <a href="{% url 'historial_estudiante' %}">Ver historial de asistencia</a>
+    {% endif %}
+
+    <br><a href="{% url 'logout' %}">Cerrar sesión</a>
+</body>
+</html>

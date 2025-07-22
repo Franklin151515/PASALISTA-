@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Asistentes</title>
+</head>
+<body>
+    <h2>Asistentes para la sesión del curso: {{ sesion.curso.nombre }}</h2>
+    <p>Fecha: {{ sesion.fecha_creacion }}</p>
+
+    {% if asistentes %}
+        <ul>
+            {% for asistencia in asistentes %}
+                <li>{{ asistencia.estudiante.username }} - {{ asistencia.fecha_hora }}</li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No hay asistentes registrados aún.</p>
+    {% endif %}
+
+    <a href="{% url 'inicio' %}">← Volver al inicio</a>
+</body>
+</html>

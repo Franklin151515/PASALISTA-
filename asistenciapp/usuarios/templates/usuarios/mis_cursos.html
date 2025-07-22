@@ -1,0 +1,10 @@
+<h2>Mis cursos inscritos</h2>
+<ul>
+    {% for inscripcion in inscripciones %}
+    <li>{{ inscripcion.curso.nombre }} - {{ inscripcion.curso.descripcion }}</li>
+    {% empty %}
+    <li>No estás inscrito en ningún curso aún.</li>
+    {% endfor %}
+</ul>
+<a href="{% url 'cursos_disponibles' %}">Ver más cursos</a> |
+<a href="{% url 'inicio' %}">Volver al inicio</a>

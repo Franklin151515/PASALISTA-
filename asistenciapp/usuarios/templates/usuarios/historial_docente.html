@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Historial de Asistencia</title>
+</head>
+<body>
+    <h2>Historial de asistencia</h2>
+
+    {% for curso_data in historial %}
+        <h3>{{ curso_data.curso.nombre }}</h3>
+
+        {% for sesion_data in curso_data.sesiones %}
+            <p><strong>Sesión:</strong> {{ sesion_data.sesion.fecha_hora }}</p>
+            <ul>
+                {% for asistencia in sesion_data.asistentes %}
+                    <li>{{ asistencia.estudiante.username }} - {{ asistencia.marcado_en }}</li>
+                {% empty %}
+                    <li>No hay asistentes registrados.</li>
+                {% endfor %}
+            </ul>
+        {% endfor %}
+    {% endfor %}
+
+    <a href="{% url 'inicio' %}">Volver al inicio</a>
+</body>
+</html>

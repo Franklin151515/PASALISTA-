@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Historial de Asistencia</title>
+</head>
+<body>
+    <h2>Mi historial de asistencia</h2>
+
+    {% if asistencias %}
+        <ul>
+            {% for asistencia in asistencias %}
+                <li>
+                    Curso: {{ asistencia.sesion.curso.nombre }} |
+                    Fecha: {{ asistencia.sesion.fecha }} |
+                    Asistencia registrada
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>Aún no has registrado ninguna asistencia.</p>
+    {% endif %}
+
+    <a href="{% url 'inicio' %}">Volver al inicio</a>
+</body>
+</html>

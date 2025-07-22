@@ -1,0 +1,15 @@
+<h2>Cursos disponibles</h2>
+<form method="post">
+    {% csrf_token %}
+    <ul>
+        {% for curso in cursos %}
+        <li>
+            <strong>{{ curso.nombre }}</strong> - {{ curso.descripcion }}
+            <button type="submit" name="curso_id" value="{{ curso.id }}">Inscribirse</button>
+        </li>
+        {% empty %}
+        <li>No hay cursos disponibles para inscribirse.</li>
+        {% endfor %}
+    </ul>
+</form>
+<a href="{% url 'inicio' %}">Volver al inicio</a>

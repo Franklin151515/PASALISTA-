@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Crear curso</title>
+</head>
+<body>
+    <h2>Crear nuevo curso</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Crear curso</button>
+    </form>
+    <a href="{% url 'inicio' %}">Volver</a>
+</body>
+</html>

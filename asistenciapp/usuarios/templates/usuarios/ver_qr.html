@@ -1,0 +1,8 @@
+<h2>Escanea este código QR para registrar asistencia</h2>
+
+<img src="data:image/png;base64,{{ qr_base64 }}" alt="QR de asistencia">
+
+<p>O visita esta URL directamente:</p>
+<p><a href="{{ url_asistencia }}">{{ url_asistencia }}</a></p>
+
+<a href="{% url 'inicio' %}">Volver al inicio</a>
