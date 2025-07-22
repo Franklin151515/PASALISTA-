@@ -14,6 +14,6 @@ urlpatterns = [
     path('sesion/<int:sesion_id>/ver-qr/', views.ver_qr_view, name='ver_qr'),
     path('asistencia/<uuid:uuid>/', views.registrar_asistencia_view, name='registrar_asistencia'),
     path('ver-asistentes/<int:sesion_id>/', views.ver_asistentes_view, name='ver_asistentes'),
-    path('historial-asistencia/', views.historial_estudiante_view, name='historial_estudiante'),
-    path('historial-asistencia/', views.historial_docente_view, name='historial_docente'),
+    path('historial-estudiante/', views.historial_estudiante_view, name='historial_estudiante'),
+    path('historial-docente/', views.historial_docente_view, name='historial_docente'),
 ]
