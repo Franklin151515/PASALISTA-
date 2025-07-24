@@ -1,14 +1,16 @@
-from django.shortcuts import render, redirect
+# IMPORTACIONES
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
-from .forms import RegistroForm
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponseForbidden
-from .forms import CursoForm
-from .models import Inscripcion
-from django.shortcuts import get_object_or_404
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseForbidden
+from .forms import RegistroForm, CursoForm
+from .models import Curso, Inscripcion, Sesion, Asistencia
 
+import qrcode
+import io
+import base64
 
+# VISTAS DE AUTENTICACIÓN
 def registro_view(request):
     if request.method == 'POST':
         form = RegistroForm(request.POST)
@@ -35,8 +37,7 @@ def logout_view(request):
     logout(request)
     return redirect('login')
 
-from .models import Curso
-
+# VISTA PRINCIPAL SEGÚN ROL
 @login_required
 def inicio_view(request):
     usuario = request.user
@@ -50,7 +51,7 @@ def inicio_view(request):
         'cursos': cursos
     })
 
-
+# CREACIÓN DE CURSOS (DOCENTE)
 @login_required
 def crear_curso_view(request):
     if not request.user.es_docente:
@@ -68,6 +69,7 @@ def crear_curso_view(request):
 
     return render(request, 'usuarios/crear_curso.html', {'form': form})
 
+# INSCRIPCIÓN A CURSOS (ESTUDIANTE)
 @login_required
 def cursos_disponibles_view(request):
     if request.user.es_docente:
@@ -91,8 +93,7 @@ def mis_cursos_view(request):
     inscripciones = Inscripcion.objects.filter(estudiante=request.user)
     return render(request, 'usuarios/mis_cursos.html', {'inscripciones': inscripciones})
 
-from .models import Sesion
-
+# CREAR SESIÓN (DOCENTE)
 @login_required
 def crear_sesion_view(request, curso_id):
     if not request.user.es_docente:
@@ -106,10 +107,7 @@ def crear_sesion_view(request, curso_id):
     sesion = Sesion.objects.create(curso=curso)
     return redirect('ver_qr', sesion_id=sesion.id)
 
-import qrcode
-import io
-import base64
-
+# GENERAR QR
 @login_required
 def ver_qr_view(request, sesion_id):
     sesion = Sesion.objects.get(id=sesion_id)
@@ -129,9 +127,7 @@ def ver_qr_view(request, sesion_id):
         'url_asistencia': url_asistencia
     })
 
-
-from .models import Asistencia
-
+# REGISTRAR ASISTENCIA
 @login_required
 def registrar_asistencia_view(request, uuid):
     try:
@@ -139,27 +135,23 @@ def registrar_asistencia_view(request, uuid):
     except Sesion.DoesNotExist:
         return HttpResponse("Sesión no encontrada.", status=404)
 
-    # Verificar que el usuario sea estudiante
     if request.user.es_docente:
         return HttpResponse("Los docentes no registran asistencia.", status=403)
 
-    # Verificar que el estudiante esté inscrito en el curso
     if not Inscripcion.objects.filter(estudiante=request.user, curso=sesion.curso).exists():
         return HttpResponse("No estás inscrito en este curso.", status=403)
 
-    # Verificar si ya registró asistencia
     if Asistencia.objects.filter(sesion=sesion, estudiante=request.user).exists():
         return HttpResponse("Ya registraste tu asistencia para esta sesión.", status=400)
 
-    # Registrar asistencia
     Asistencia.objects.create(sesion=sesion, estudiante=request.user)
     return HttpResponse("✅ Asistencia registrada exitosamente.")
 
+# VER ASISTENTES (DOCENTE)
 @login_required
 def ver_asistentes_view(request, sesion_id):
     sesion = get_object_or_404(Sesion, id=sesion_id)
 
-    # Asegurar que el usuario sea docente y dueño del curso
     if not request.user.es_docente or sesion.curso.docente != request.user:
         return HttpResponse("No tienes permiso para ver esta sesión.", status=403)
 
@@ -169,18 +161,16 @@ def ver_asistentes_view(request, sesion_id):
         'sesion': sesion,
         'asistentes': asistentes
     })
-from django.contrib.auth.decorators import login_required
-from .models import Asistencia
 
+# HISTORIAL DE ASISTENCIA (ESTUDIANTE)
 @login_required
 def historial_estudiante_view(request):
     asistencias = Asistencia.objects.filter(estudiante=request.user).select_related('sesion__curso').order_by('-sesion__fecha')
     return render(request, 'usuarios/historial_estudiante.html', {
         'asistencias': asistencias
     })
-from django.shortcuts import render
-from .models import Curso, Sesion, Asistencia
 
+# HISTORIAL DE SESIONES Y ASISTENCIA (DOCENTE)
 @login_required
 def historial_docente_view(request):
     if not request.user.es_docente:
@@ -208,6 +198,8 @@ def historial_docente_view(request):
     return render(request, 'usuarios/historial_docente.html', {
         'historial': data
     })
+
+# CÁMARA PARA ESCANEAR QR
 @login_required
 def camaraqr_view(request):
     return render(request, 'usuarios/camaraqr.html')
