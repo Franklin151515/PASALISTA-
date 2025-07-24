@@ -16,4 +16,5 @@ urlpatterns = [
     path('ver-asistentes/<int:sesion_id>/', views.ver_asistentes_view, name='ver_asistentes'),
     path('historial-estudiantes/', views.historial_estudiante_view, name='historial_estudiante'),
     path('historial-docentes/', views.historial_docente_view, name='historial_docente'),
+    path('camaraqr/', views.camaraqr_view, name='camaraqr'),
 ]

@@ -114,10 +114,9 @@ import base64
 def ver_qr_view(request, sesion_id):
     sesion = Sesion.objects.get(id=sesion_id)
 
-    if sesion.curso.docente != request.user:
-        return HttpResponseForbidden("No puedes ver este QR.")
-
-    url_asistencia = request.build_absolute_uri(f'/asistencia/{sesion.uuid}/')
+    # Cambia 'localhost' por la IP local de tu PC
+    ip_local = "192.168.31.46"  # Cambia esto por la IP de tu PC en la red
+    url_asistencia = f'http://{ip_local}:8000/asistencia/{sesion.uuid}/'
 
     qr = qrcode.make(url_asistencia)
     buffer = io.BytesIO()
@@ -129,6 +128,7 @@ def ver_qr_view(request, sesion_id):
         'qr_base64': img_base64,
         'url_asistencia': url_asistencia
     })
+
 
 from .models import Asistencia
 
@@ -208,3 +208,6 @@ def historial_docente_view(request):
     return render(request, 'usuarios/historial_asistencia.html', {
         'historial': data
     })
+@login_required
+def camaraqr_view(request):
+    return render(request, 'usuarios/camaraqr.html')

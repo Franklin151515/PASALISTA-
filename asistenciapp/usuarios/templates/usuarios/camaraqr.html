@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Escanear QR</title>
+    <script src="https://unpkg.com/html5-qrcode"></script>
+</head>
+<body>
+    <h2>Escanea el código QR para registrar tu asistencia</h2>
+    <div id="qr-reader" style="width:300px;"></div>
+    <p id="mensaje-camara" style="color:red;"></p>
+    <button onclick="iniciarQR()">Iniciar escaneo</button>
+
+    <script>
+    function iniciarQR() {
+        document.getElementById('mensaje-camara').textContent = "";
+        const qrReader = document.getElementById('qr-reader');
+        qrReader.innerHTML = "";
+
+        const html5QrCode = new Html5Qrcode("qr-reader");
+        html5QrCode.start(
+            { facingMode: "environment" },
+            {
+                fps: 10,
+                qrbox: 250
+            },
+            qrCodeMessage => {
+                // Detiene el escaneo y redirige automáticamente para registrar asistencia
+                html5QrCode.stop();
+                window.location.href = qrCodeMessage;
+            },
+            errorMessage => {
+                // Puedes mostrar errores si lo deseas
+            }
+        ).catch(err => {
+            document.getElementById('mensaje-camara').textContent = "No se encontró cámara o no se pudo acceder.";
+        });
+     }
+    </script>
+</body>
+</html>
