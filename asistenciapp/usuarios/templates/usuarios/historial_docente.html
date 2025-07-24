@@ -1,26 +1,43 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
+    <meta charset="UTF-8">
     <title>Historial de Asistencia</title>
+    <!-- Bootstrap CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
-<body>
-    <h2>Historial de asistencia</h2>
+<body class="bg-light">
 
-    {% for curso_data in historial %}
-        <h3>{{ curso_data.curso.nombre }}</h3>
+    <div class="container mt-5">
+        <div class="card shadow">
+            <div class="card-body">
+                <h2 class="card-title mb-4 text-primary">📚 Historial de asistencia</h2>
 
-        {% for sesion_data in curso_data.sesiones %}
-            <p><strong>Sesión:</strong> {{ sesion_data.sesion.fecha_hora }}</p>
-            <ul>
-                {% for asistencia in sesion_data.asistentes %}
-                    <li>{{ asistencia.estudiante.username }} - {{ asistencia.marcado_en }}</li>
-                {% empty %}
-                    <li>No hay asistentes registrados.</li>
+                {% for curso_data in historial %}
+                    <div class="mb-4">
+                        <h4 class="text-success">{{ curso_data.curso.nombre }}</h4>
+
+                        {% for sesion_data in curso_data.sesiones %}
+                            <div class="mb-3">
+                                <p><strong>🕒 Sesión:</strong> {{ sesion_data.sesion.fecha }}</p>
+                                <ul class="list-group">
+                                    {% for asistencia in sesion_data.asistentes %}
+                                        <li class="list-group-item">
+                                            👤 {{ asistencia.estudiante.username }} - 🕓 {{ asistencia.fecha_hora }}
+                                        </li>
+                                    {% empty %}
+                                        <li class="list-group-item text-muted">No hay asistentes registrados.</li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        {% endfor %}
+                    </div>
                 {% endfor %}
-            </ul>
-        {% endfor %}
-    {% endfor %}
 
-    <a href="{% url 'inicio' %}">Volver al inicio</a>
+                <a href="{% url 'inicio' %}" class="btn btn-secondary mt-3">← Volver al inicio</a>
+            </div>
+        </div>
+    </div>
+
 </body>
 </html>

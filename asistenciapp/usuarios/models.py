@@ -1,6 +1,7 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.conf import settings
+from django.core.validators import MinLengthValidator
 
 class Usuario(AbstractUser):
     es_docente = models.BooleanField(default=False)
@@ -10,11 +11,11 @@ class Usuario(AbstractUser):
 
 class Curso(models.Model):
     nombre = models.CharField(max_length=100)
-    descripcion = models.TextField(blank=True)
+    descripcion = models.TextField(blank=True, validators=[MinLengthValidator(10)])
     docente = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-
     def __str__(self):
         return self.nombre
+
 class Inscripcion(models.Model):
     estudiante = models.ForeignKey(Usuario, on_delete=models.CASCADE)
     curso = models.ForeignKey(Curso, on_delete=models.CASCADE)

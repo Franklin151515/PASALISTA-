@@ -112,8 +112,7 @@ def crear_sesion_view(request, curso_id):
 def ver_qr_view(request, sesion_id):
     sesion = Sesion.objects.get(id=sesion_id)
 
-    # Cambia 'localhost' por la IP local de tu PC
-    ip_local = "192.168.31.46"  # Cambia esto por la IP de tu PC en la red
+    ip_local = "10.180.201.46"  # Cambia esto por la IP de tu PC en la red
     url_asistencia = f'http://{ip_local}:8000/asistencia/{sesion.uuid}/'
 
     qr = qrcode.make(url_asistencia)
@@ -145,7 +144,7 @@ def registrar_asistencia_view(request, uuid):
         return HttpResponse("Ya registraste tu asistencia para esta sesión.", status=400)
 
     Asistencia.objects.create(sesion=sesion, estudiante=request.user)
-    return HttpResponse("✅ Asistencia registrada exitosamente.")
+    return render(request, 'usuarios/asistencia_exitosa.html')
 
 # VER ASISTENTES (DOCENTE)
 @login_required
