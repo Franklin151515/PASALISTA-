@@ -190,7 +190,7 @@ def historial_docente_view(request):
     data = []
 
     for curso in cursos:
-        sesiones = Sesion.objects.filter(curso=curso).order_by('-fecha_hora')
+        sesiones = Sesion.objects.filter(curso=curso).order_by('-fecha')
         sesiones_data = []
 
         for sesion in sesiones:
@@ -205,7 +205,7 @@ def historial_docente_view(request):
             'sesiones': sesiones_data
         })
 
-    return render(request, 'usuarios/historial_asistencia.html', {
+    return render(request, 'usuarios/historial_docente.html', {
         'historial': data
     })
 @login_required
